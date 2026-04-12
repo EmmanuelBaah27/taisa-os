@@ -1,0 +1,13 @@
+{
+  "name": "taisa",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "shared"
+  ],
+  "scripts": {
+    "backend": "npm run dev --workspace=backend",
+    "mobile": "cd mobile && npx expo start"
+  }
+}

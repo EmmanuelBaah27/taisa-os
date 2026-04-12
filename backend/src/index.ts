@@ -1,0 +1,56 @@
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import { getDb } from './db/connection';
+
+import profileRouter from './routes/profile';
+import entriesRouter from './routes/entries';
+import transcribeRouter from './routes/transcribe';
+import analyzeRouter from './routes/analyze';
+import reviewsRouter from './routes/reviews';
+import goalsRouter from './routes/goals';
+import actionItemsRouter from './routes/actionItems';
+import trajectoryRouter from './routes/trajectory';
+import notificationsRouter from './routes/notifications';
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(helmet());
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json({ limit: '10mb' }));
+
+// Init DB on startup
+getDb();
+
+// Routes
+app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/entries', entriesRouter);
+app.use('/api/v1/transcribe', transcribeRouter);
+app.use('/api/v1/analyze', analyzeRouter);
+app.use('/api/v1/reviews', reviewsRouter);
+app.use('/api/v1/goals', goalsRouter);
+app.use('/api/v1/action-items', actionItemsRouter);
+app.use('/api/v1/trajectory', trajectoryRouter);
+app.use('/api/v1/notifications', notificationsRouter);
+
+// Health check
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Error handler
+app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, error: { code: 'INTERNAL_ERROR', message: err.message } });
+});
+
+app.listen(PORT, () => {
+  console.log(`Taisa backend running on http://localhost:${PORT}`);
+});
+
+export default app;
