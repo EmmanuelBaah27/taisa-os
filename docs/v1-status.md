@@ -63,4 +63,4 @@ These were never built, not re-scoped:
 4. **CV Archive as a first-class surface** — CV Moment entity, dedicated screen, copy-to-clipboard.
 5. **Settings / edit profile** — basic UX hygiene. Needed before sharing with anyone else.
 6. **Real tab icons** — install `lucide-react-native`, replace placeholders in `(tabs)/_layout.tsx`.
-7. **NativeWind migration** — prerequisite for UI rebuild. Run this plan before redesigning any screen: `docs/superpowers/plans/nativewind-setup.md` (to be written).
+7. **NativeWind migration** — prerequisite for UI rebuild. Must be set up before redesigning any screen. Involves installing NativeWind, migrating `theme.ts` tokens to `tailwind.config.js`, and updating existing screens.
