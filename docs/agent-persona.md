@@ -112,7 +112,12 @@ No prior `entry_analyses` rows (e.g., `coach_note` or `pattern_flags` from earli
 
 This is the build guide for the AI layer. Work through these steps in order with Claude's assistance. Each step builds on the previous one.
 
-**Recommended build order:** Step 3 first (conversation interface is the prerequisite), then Step 5 (persistent memory), then Step 1 (mode selection), then Step 2 (prior context), then Step 4 (session summary).
+**Recommended build order (prerequisites first):**
+1. Step 3 — Conversation Interface (prerequisite for all other steps)
+2. Step 5 — Persistent Memory (builds on chat sessions)
+3. Step 1 — Mode Selection (add modes once chat exists)
+4. Step 2 — Prior Session Context (feeds into mode selection)
+5. Step 4 — Session Summary (final polish on session end)
 
 ---
 
