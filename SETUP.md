@@ -36,7 +36,7 @@ cp .env.example .env
 ```
 Edit `mobile/.env`:
 ```
-EXPO_PUBLIC_API_URL=http://YOUR_MAC_IP:3000/api/v1
+EXPO_PUBLIC_API_URL=http://YOUR_MAC_IP:3001/api/v1
 ```
 > **Important:** Use your Mac's local IP (e.g. `192.168.1.5`), not `localhost`, so your phone can reach the backend over WiFi.
 > Find it with: `ipconfig getifaddr en0`

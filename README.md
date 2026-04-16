@@ -41,7 +41,7 @@ the material is already shaped and waiting
 
 See [SETUP.md](SETUP.md) for first-time setup (API keys, environment files).
 
-**Common issue:** Port 3000 may be in use by another local dev server. Change `PORT` in `backend/.env` if needed.
+**Common issue:** If port 3001 is in use by another local dev server, change `PORT` in `backend/.env` and update `EXPO_PUBLIC_API_URL` in `mobile/.env` to match.
 
 ```bash
 # Terminal 1 — backend (from repo root)
