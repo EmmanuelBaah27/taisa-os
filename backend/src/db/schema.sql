@@ -149,3 +149,26 @@ CREATE INDEX IF NOT EXISTS idx_action_items_user_status ON action_items(user_id,
 CREATE INDEX IF NOT EXISTS idx_goals_user_status ON goals(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_themes_user_label ON career_themes(user_id, label);
 CREATE INDEX IF NOT EXISTS idx_reviews_user_id ON performance_reviews(user_id);
+
+-- Chat Sessions
+CREATE TABLE IF NOT EXISTS chat_sessions (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id),
+  entry_id TEXT REFERENCES journal_entries(id),
+  started_at TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active'
+);
+
+-- Chat Messages
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id TEXT PRIMARY KEY,
+  session_id TEXT NOT NULL REFERENCES chat_sessions(id),
+  role TEXT NOT NULL CHECK(role IN ('user', 'assistant')),
+  content TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+-- Chat indexes
+CREATE INDEX IF NOT EXISTS idx_chat_sessions_user_id ON chat_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_chat_sessions_entry_id ON chat_sessions(entry_id);
+CREATE INDEX IF NOT EXISTS idx_chat_messages_session_id ON chat_messages(session_id);
