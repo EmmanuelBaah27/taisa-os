@@ -44,4 +44,16 @@ describe('chat DB tables', () => {
     const row = db.prepare("SELECT * FROM chat_messages WHERE id = 'm1'").get() as any;
     expect(row.role).toBe('user');
   });
+
+  test('chat_messages rejects invalid role values', () => {
+    const db = makeDb();
+    db.prepare(`INSERT INTO users (id, created_at, updated_at)
+      VALUES ('u2', '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')`).run();
+    db.prepare(`INSERT INTO chat_sessions (id, user_id, entry_id, started_at, status)
+      VALUES ('s2', 'u2', NULL, '2026-01-01T00:00:00Z', 'active')`).run();
+    expect(() => {
+      db.prepare(`INSERT INTO chat_messages (id, session_id, role, content, created_at)
+        VALUES ('m2', 's2', 'system', 'hello', '2026-01-01T00:00:01Z')`).run();
+    }).toThrow();
+  });
 });

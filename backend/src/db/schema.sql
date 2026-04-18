@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS chat_sessions (
   user_id TEXT NOT NULL REFERENCES users(id),
   entry_id TEXT REFERENCES journal_entries(id),
   started_at TEXT NOT NULL,
-  status TEXT NOT NULL DEFAULT 'active'
+  status TEXT NOT NULL DEFAULT 'active' CHECK(status IN ('active', 'ended'))
 );
 
 -- Chat Messages
