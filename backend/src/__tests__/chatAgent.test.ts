@@ -17,6 +17,12 @@ function seedUser(db: Database.Database) {
     VALUES ('u1', '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z',
     'Designer', 'Tech', 'mid', 'Lead team', 'CPO', 'Systems', 'direct', 'moderate')`
   ).run();
+  db.prepare(`INSERT INTO users (id, created_at, updated_at, current_role, industry,
+    career_stage, short_term_goal, long_term_goal, current_focus_area,
+    coaching_style, accountability_level)
+    VALUES ('other-user', '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z',
+    'Engineer', 'Tech', 'mid', 'Lead team', 'CTO', 'Systems', 'direct', 'moderate')`
+  ).run();
 }
 
 jest.mock('../services/claude/client', () => ({

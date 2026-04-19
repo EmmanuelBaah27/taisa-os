@@ -44,7 +44,7 @@ const aiRateLimit = rateLimit({
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/entries', entriesRouter);
 app.use('/api/v1/transcribe', aiRateLimit, transcribeRouter);
-app.use('/api/v1/analyze', analyzeRouter);
+app.use('/api/v1/analyze', aiRateLimit, analyzeRouter);
 app.use('/api/v1/reviews', reviewsRouter);
 app.use('/api/v1/goals', goalsRouter);
 app.use('/api/v1/action-items', actionItemsRouter);
