@@ -92,6 +92,9 @@ export async function sendMessage(
 
   const system = buildChatProcessorSystem(profile as any, activeGoals, recentThemes, entryAnalysis);
 
+  // Capture user message timestamp BEFORE the API call
+  const userMsgTime = new Date().toISOString();
+
   const response = await anthropicClient.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -102,17 +105,18 @@ export async function sendMessage(
     ],
   });
 
+  // Capture assistant reply timestamp AFTER the API call returns (naturally later)
+  const assistantMsgTime = new Date().toISOString();
+
   const content = response.content[0];
   if (content.type !== 'text') throw new Error('Unexpected response type from Claude');
   const assistantReply = content.text;
 
-  const now = new Date().toISOString();
   const insertMsg = db.prepare(`INSERT INTO chat_messages (id, session_id, role, content, created_at)
     VALUES (?, ?, ?, ?, ?)`);
 
-  insertMsg.run(uuidv4(), sessionId, 'user', userMessage, now);
-  const replyTime = new Date(Date.now() + 1).toISOString();
-  insertMsg.run(uuidv4(), sessionId, 'assistant', assistantReply, replyTime);
+  insertMsg.run(uuidv4(), sessionId, 'user', userMessage, userMsgTime);
+  insertMsg.run(uuidv4(), sessionId, 'assistant', assistantReply, assistantMsgTime);
 
   return assistantReply;
 }
