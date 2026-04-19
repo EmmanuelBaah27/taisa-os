@@ -105,6 +105,42 @@ router.put('/', (req, res) => {
   res.json({ success: true, data: rowToProfile(row) });
 });
 
+// DELETE /api/v1/profile
+// Permanently deletes all data for this user. Irreversible.
+router.delete('/', (req, res) => {
+  const db = getDb();
+  const userId = req.headers['x-user-id'] as string;
+  if (!userId) return res.status(401).json({ success: false, error: { code: 'UNAUTHORIZED', message: 'x-user-id header required' } });
+
+  const user = db.prepare('SELECT id FROM users WHERE id = ?').get(userId);
+  if (!user) return res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'User not found' } });
+
+  const deleteAll = db.transaction(() => {
+    // Chat messages (references chat_sessions)
+    db.prepare(`DELETE FROM chat_messages WHERE session_id IN
+      (SELECT id FROM chat_sessions WHERE user_id = ?)`).run(userId);
+    db.prepare('DELETE FROM chat_sessions WHERE user_id = ?').run(userId);
+    // Milestones (references goals)
+    db.prepare(`DELETE FROM milestones WHERE goal_id IN
+      (SELECT id FROM goals WHERE user_id = ?)`).run(userId);
+    db.prepare('DELETE FROM goals WHERE user_id = ?').run(userId);
+    // Entry-linked data
+    db.prepare(`DELETE FROM entry_analyses WHERE entry_id IN
+      (SELECT id FROM journal_entries WHERE user_id = ?)`).run(userId);
+    db.prepare('DELETE FROM action_items WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM journal_entries WHERE user_id = ?').run(userId);
+    // Remaining user data
+    db.prepare('DELETE FROM performance_reviews WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM career_themes WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM trajectory_snapshots WHERE user_id = ?').run(userId);
+    // User last
+    db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+  });
+
+  deleteAll();
+  res.json({ success: true, data: { message: 'All user data deleted.' } });
+});
+
 function rowToProfile(row: any): CareerProfile {
   return {
     id: row.id,
