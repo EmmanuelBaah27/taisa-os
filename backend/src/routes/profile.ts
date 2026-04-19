@@ -137,8 +137,13 @@ router.delete('/', (req, res) => {
     db.prepare('DELETE FROM users WHERE id = ?').run(userId);
   });
 
-  deleteAll();
-  res.json({ success: true, data: { message: 'All user data deleted.' } });
+  try {
+    deleteAll();
+    res.json({ success: true, data: { message: 'All user data deleted.' } });
+  } catch (error: any) {
+    console.error('Data deletion failed:', error);
+    res.status(500).json({ success: false, error: { code: 'DELETE_FAILED', message: 'Failed to delete user data.' } });
+  }
 });
 
 function rowToProfile(row: any): CareerProfile {
